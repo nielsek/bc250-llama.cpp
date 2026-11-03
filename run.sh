@@ -22,4 +22,11 @@ sudo systemd-run --unit=llama-server --uid="$(id -u)" --gid="$(id -g)" \
   --temp 0.6 --top-p 0.95 --top-k 20 --min-p 0 --presence-penalty 0 \
   --cache-ram 3072 --host 0.0.0.0 --port 8000 || exit 1
 
-sudo systemctl isolate multi-user.target
+# Leave the desktop from a transient service as well, since a terminal running
+# this script dies with the desktop. The GPU clock governor is only wanted by
+# graphical.target, so start it again or the GPU stays at its idle clock. Then
+# switch to the tty1 login prompt instead of the desktop's last frozen frame.
+sudo systemd-run --unit=llama-headless --collect -p IgnoreOnIsolate=yes \
+  sh -c 'systemctl isolate multi-user.target || exit 1
+         systemctl start cyan-skillfish-governor-smu.service
+         chvt 1'
