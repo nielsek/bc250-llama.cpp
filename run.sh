@@ -5,8 +5,7 @@
 # survives the desktop session ending and nothing persists past a reboot.
 #
 # Attach:  tmux -L llama attach
-# Stop:    sudo systemctl stop llama-server
-# Desktop: sudo systemctl isolate graphical.target
+# Stop:    ./stop.sh (also returns to the desktop)
 
 cd "$(dirname "$0")" || exit 1
 
