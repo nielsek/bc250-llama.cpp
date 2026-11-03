@@ -8,8 +8,9 @@ on port 8000, for use as a coding model from [opencode](https://opencode.ai).
 
 - [CachyOS](https://cachyos.org/)
 - A fully unlocked BC-250, with all CPU cores and GPU CUs enabled
-- The GPU governor (`cyan-skillfish-governor-smu`) and the `bc250-cachyos`
-  package repository from
+- The GPU governor (`cyan-skillfish-governor-smu`), the `bc250-cachyos`
+  package repository and the `ttm.pages_limit=3145728` kernel parameter (which
+  lets the GPU use up to 12 GiB of system memory) from
   [bc250-toolkit](https://github.com/redbeard1083/bc250-toolkit)
 
 ## Usage
@@ -29,8 +30,10 @@ context size the server actually has, or opencode will send more than fits:
 
 The BC-250 has 16 GB of GDDR6 shared by the CPU and GPU. 512 MiB is carved out
 for the GPU in the BIOS, the firmware takes ~0.6 GiB, and Linux sees the
-remaining 14.8 GiB. The GPU may use up to 12 GiB of that (`ttm.pages_limit` on
-the kernel command line); the Vulkan driver reports the GPU as integrated, so
+remaining 14.8 GiB. The GPU may use up to 12 GiB of that, set by the
+`ttm.pages_limit` kernel parameter that bc250-toolkit installs (without it the
+kernel's default allows only half of RAM); the Vulkan driver reports the GPU as
+integrated, so
 llama.cpp places everything in this shared memory. Since it is all the same
 memory, a bigger BIOS carve-out would not make anything faster.
 
